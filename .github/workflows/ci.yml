@@ -14,7 +14,7 @@ jobs:
     # Standard GitHub-hosted macOS runners are Intel (x64). The release build is
     # cross-published for arm64; tests run natively on x64 to avoid mixed-arch
     # test hosts. Real game/Wine integration tests are excluded.
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
 
