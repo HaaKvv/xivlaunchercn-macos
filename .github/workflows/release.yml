@@ -27,8 +27,14 @@ jobs:
       - name: Create archive
         run: |
           cd dist
-          ditto -c -k --sequesterRsrc --keepParent XIVLauncherCN.app XIVLauncherCN-macos-arm64.zip
+          ditto -c -k --keepParent XIVLauncherCN.app XIVLauncherCN-macos-arm64.zip
           shasum -a 256 XIVLauncherCN-macos-arm64.zip > XIVLauncherCN-macos-arm64.zip.sha256
+
+      - name: Verify archive signature
+        run: |
+          rm -rf /tmp/xlcn-verify
+          ditto -x -k dist/XIVLauncherCN-macos-arm64.zip /tmp/xlcn-verify
+          codesign --verify --deep --strict /tmp/xlcn-verify/XIVLauncherCN.app
 
       - name: Publish release
         uses: softprops/action-gh-release@v2

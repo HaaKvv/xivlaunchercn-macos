@@ -137,14 +137,31 @@ if [ -f "$SRC_DIR/XIVLauncher.Avalonia/Resources/dalamud_icon.icns" ]; then
     cp "$SRC_DIR/XIVLauncher.Avalonia/Resources/dalamud_icon.icns" "$APP_BUNDLE/Contents/Resources/"
 fi
 
-# 可选 codesign（ad-hoc 签名可在本机运行；正式分发需要 Developer ID）
+# Managed .dll/.pdb/.json are data, not Mach-O. Remove execute bits so codesign
+# does not treat them as nested code, then sign nested executables explicitly.
+find "$APP_BUNDLE/Contents/MacOS" -maxdepth 1 -type f \
+    \( -name '*.dll' -o -name '*.pdb' -o -name '*.json' -o -name '*.xml' -o -name '*.txt' \) \
+    -exec chmod a-x {} +
+
+SIGN_ARG="${SIGN_ID:--}"
 if [ -n "${SIGN_ID:-}" ]; then
     echo "==> codesign (identity: $SIGN_ID)"
-    codesign --force --deep --sign "$SIGN_ID" "$APP_BUNDLE"
 else
     echo "==> ad-hoc codesign"
-    codesign --force --deep --sign - "$APP_BUNDLE" 2>/dev/null || true
 fi
+
+for nested in \
+    "$APP_BUNDLE/Contents/MacOS/XIVLauncherCN.bin" \
+    "$APP_BUNDLE/Contents/MacOS/Resources/xdelta3"
+do
+    if [ -f "$nested" ]; then
+        codesign --force --sign "$SIGN_ARG" "$nested"
+    fi
+done
+
+codesign --force --deep --sign "$SIGN_ARG" "$APP_BUNDLE"
+codesign --verify --deep --strict "$APP_BUNDLE"
+echo "==> codesign verified"
 
 echo "==> .app 打包完成: $APP_BUNDLE"
 
