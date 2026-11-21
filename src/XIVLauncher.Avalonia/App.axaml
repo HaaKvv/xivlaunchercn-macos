@@ -1,0 +1,31 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:XIVLauncher"
+             x:Class="XIVLauncher.App"
+             RequestedThemeVariant="Dark">
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Dark" Accent="#797FF7" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
+    </Application.Styles>
+
+    <Application.Resources>
+        <!-- 主色（卫月紫） -->
+        <SolidColorBrush x:Key="DalamudAccentBrush" Color="#5865F2" />
+        <SolidColorBrush x:Key="DalamudAccentDarkBrush" Color="#4752C4" />
+        <SolidColorBrush x:Key="CardBackgroundBrush" Color="#1E1E2E" />
+        <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#181825" />
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#CDD6F4" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9399B2" />
+        <SolidColorBrush x:Key="BorderSubtleBrush" Color="#313244" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="#A6E3A1" />
+        <SolidColorBrush x:Key="ErrorBrush" Color="#F38BA8" />
+        <SolidColorBrush x:Key="WarningBrush" Color="#FAB387" />
+    </Application.Resources>
+</Application>

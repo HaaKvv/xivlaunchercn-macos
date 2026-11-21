@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Product>XIVLauncher.DCTravel</Product>
+        <AssemblyTitle>XIVLauncher.DCTravel</AssemblyTitle>
+        <Description>Cross-DC travel support for XIVLauncherCN (macOS port).</Description>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Deterministic>true</Deterministic>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\XIVLauncher.Common\XIVLauncher.Common.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.Common.Http\XIVLauncher.Common.Http.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.Login\XIVLauncher.Login.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="EmbedIO"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Serilog"/>
+    </ItemGroup>
+</Project>

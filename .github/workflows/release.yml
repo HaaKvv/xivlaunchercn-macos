@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build and package
+        run: |
+          ./scripts/build-macos.sh arm64
+          ./scripts/package-app.sh arm64
+
+      - name: Create archive
+        run: |
+          cd dist
+          ditto -c -k --sequesterRsrc --keepParent XIVLauncherCN.app XIVLauncherCN-macos-arm64.zip
+          shasum -a 256 XIVLauncherCN-macos-arm64.zip > XIVLauncherCN-macos-arm64.zip.sha256
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/XIVLauncherCN-macos-arm64.zip
+            dist/XIVLauncherCN-macos-arm64.zip.sha256
+          generate_release_notes: true
+          body: |
+            macOS arm64 build (ad-hoc signed).
+
+            Requires .NET 10 Runtime. If Gatekeeper blocks the app:
+            `xattr -dr com.apple.quarantine /Applications/XIVLauncherCN.app`
+            or right-click → Open.

@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Product>XIVLauncherCN (macOS)</Product>
+        <AssemblyTitle>XIVLauncherCN</AssemblyTitle>
+        <Description>Custom launcher for FFXIV CN server (macOS port, based on AtmoOmen/FFXIVQuickLauncher).</Description>
+        <VersionPrefix>2.5.3</VersionPrefix>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <RuntimeIdentifier Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(RuntimeIdentifier)' == ''">osx-arm64</RuntimeIdentifier>
+        <UseAvalonia>true</UseAvalonia>
+        <Deterministic>true</Deterministic>
+        <OutputPath>..\bin\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <PackageId>XIVLauncherCN</PackageId>
+        <AssemblyName>XIVLauncherCN</AssemblyName>
+        <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>$(DefineConstants);TRACE;DEBUG;XL_NOAUTOUPDATE</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseNoUpdate' ">
+        <DefineConstants>$(DefineConstants);TRACE;XL_NOAUTOUPDATE</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\XIVLauncher.Account\XIVLauncher.Account.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.Common\XIVLauncher.Common.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.Common.Mac\XIVLauncher.Common.Mac.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.DCTravel\XIVLauncher.DCTravel.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.Login\XIVLauncher.Login.csproj"/>
+        <ProjectReference Include="..\XIVLauncher.GamePatchV3\XIVLauncher.GamePatchV3.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Desktop"/>
+        <PackageReference Include="Avalonia.Themes.Fluent"/>
+        <PackageReference Include="Avalonia.Fonts.Inter"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
+        <PackageReference Include="Serilog"/>
+        <PackageReference Include="Serilog.Sinks.Async"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+        <PackageReference Include="Serilog.Sinks.Debug"/>
+        <PackageReference Include="Serilog.Sinks.File"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Resources\**"/>
+        <None Update="Resources\xdelta3" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+</Project>

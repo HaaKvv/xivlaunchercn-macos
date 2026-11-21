@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore src/XIVLauncher.slnx
+
+      - name: Build app (arm64)
+        run: >
+          dotnet build src/XIVLauncher.Avalonia/XIVLauncher.Avalonia.csproj
+          -c Release -p:RuntimeIdentifier=osx-arm64 --no-restore
+
+      - name: Build tests
+        run: >
+          dotnet build src/XIVLauncher.Test/XIVLauncher.Test.csproj
+          -c Release --no-restore
+
+      - name: Unit tests
+        run: >
+          dotnet test src/XIVLauncher.Test/XIVLauncher.Test.csproj
+          -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+          --filter "FullyQualifiedName!~MaintenanceIntegrationTests"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/test-results.trx"
+          if-no-files-found: ignore

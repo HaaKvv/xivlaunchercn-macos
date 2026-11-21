@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+dist/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Logs and local data
+*.log
+logs/
+*.tmp
+*.bak
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Local runtime/test artifacts
+wineprefix/
+__pycache__/
+*.swp

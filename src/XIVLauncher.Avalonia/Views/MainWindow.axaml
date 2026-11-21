@@ -1,0 +1,244 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="XIVLauncher.Views.MainWindow"
+        Title="XIVLauncherCN"
+        Width="900" Height="640"
+        MinWidth="720" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource PanelBackgroundBrush}"
+        Icon="/Assets/dalamud_icon.ico">
+
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.secondary">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="8,8" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtleBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{DynamicResource DalamudAccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#505BCF" />
+        </Style>
+        <Style Selector="Button.primary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource DalamudAccentDarkBrush}" />
+        </Style>
+        <Style Selector="Button.primary:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#353A57" />
+            <Setter Property="Foreground" Value="#C0C5DF" />
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.news">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.news:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource BorderSubtleBrush}" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="MinHeight" Value="34" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="MinHeight" Value="34" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="18" RowSpacing="14">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <Image Source="/Assets/logo.png" Width="38" Height="38" />
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="XIVLauncherCN" FontSize="19" FontWeight="SemiBold" />
+                    <TextBlock Classes="secondary" Text="最终幻想 XIV 国服" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Button Classes="secondary" Content="账号管理" Command="{Binding OpenAccountsCommand}" />
+                <Button Classes="secondary" Content="跨大区旅行" Command="{Binding OpenTravelCommand}" />
+                <Button Classes="secondary" Content="设置" Command="{Binding OpenSettingsCommand}" />
+                <Button Classes="secondary" Content="数据目录" Command="{Binding OpenRoamingFolderCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,332" ColumnSpacing="14">
+            <Border Classes="card" Padding="12">
+                <TabControl x:Name="DashboardTabs" SelectedIndex="{Binding DashboardTabIndex}">
+                    <TabItem Header="官方新闻">
+                        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8" Margin="0,10,0,0">
+                            <Button Classes="secondary" Content="刷新新闻" HorizontalAlignment="Right"
+                                    Command="{Binding RefreshNewsCommand}" />
+                            <TextBlock Grid.Row="1" Classes="secondary" Text="{Binding NewsStatus}"
+                                       IsVisible="{Binding ShowNewsStatus}" TextWrapping="Wrap" />
+                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding News}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Classes="news" Command="{Binding $parent[Window].DataContext.OpenNewsCommand}"
+                                                    CommandParameter="{Binding}" ToolTip.Tip="{Binding Title}">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis"
+                                                               TextWrapping="Wrap" MaxLines="2" />
+                                                    <TextBlock Grid.Column="1" Classes="secondary" Text="{Binding Date, StringFormat='{}{0:MM-dd}'}" />
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="游戏维护">
+                        <ScrollViewer Margin="4,12,4,0" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Spacing="12">
+                                <TextBlock Classes="section" Text="游戏安装" />
+                                <SelectableTextBlock Classes="secondary" Text="{Binding GamePathText}"
+                                                     TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding MaintenanceStatus}" TextWrapping="Wrap" />
+                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                                    <Button Classes="secondary" Content="检查更新" HorizontalAlignment="Stretch"
+                                            Command="{Binding CheckGameUpdateCommand}" />
+                                    <Button Grid.Column="1" Classes="secondary" Content="安装更新" HorizontalAlignment="Stretch"
+                                            Command="{Binding UpdateGameCommand}" />
+                                    <Button Grid.Row="1" Classes="secondary" Content="修复游戏" HorizontalAlignment="Stretch"
+                                            Command="{Binding RepairGameCommand}" />
+                                    <Button Grid.Row="1" Grid.Column="1" Classes="secondary" Content="更新卫月" HorizontalAlignment="Stretch"
+                                            Command="{Binding UpdateDalamudCommand}" />
+                                </Grid>
+                                <Button Classes="secondary" Content="下载安装游戏" HorizontalAlignment="Stretch"
+                                        IsVisible="{Binding !HasGame}" Command="{Binding DownloadGameCommand}" />
+                                <StackPanel Spacing="6" IsVisible="{Binding IsDownloading}">
+                                    <TextBlock Text="{Binding DownloadPhase}" />
+                                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding DownloadPercent}" />
+                                    <TextBlock Classes="secondary" Text="{Binding DownloadDetail}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="网络诊断">
+                        <Grid RowDefinitions="Auto,*" RowSpacing="14" Margin="4,12,4,0">
+                            <WrapPanel Orientation="Horizontal">
+                                <Button Classes="secondary" Content="开始诊断" Margin="0,0,8,6"
+                                        Command="{Binding DiagnoseNetworkCommand}" />
+                                <Button Classes="secondary" Content="生成 hosts 修复脚本" Margin="0,0,0,6"
+                                        Command="{Binding GenerateHostsFixCommand}" />
+                            </WrapPanel>
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                                <SelectableTextBlock Text="{Binding NetworkDiagnosis}" TextWrapping="Wrap" />
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Border>
+
+            <Border Grid.Column="1" Classes="card" Padding="16">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.BringIntoViewOnFocusChange="False">
+                    <StackPanel Spacing="12">
+                        <TextBlock Classes="section" Text="登录游戏" />
+
+                        <StackPanel Spacing="8" IsEnabled="{Binding CanEditLogin}">
+                            <ComboBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}"
+                                      PlaceholderText="选择大区" AutomationProperties.Name="游戏大区">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate><TextBlock Text="{Binding AreaName}" /></DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Classes="secondary" Content="重新加载大区" IsVisible="{Binding CanRetryAreas}"
+                                    Command="{Binding ReloadAreasCommand}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <RadioButton GroupName="LoginType" Content="扫码" IsChecked="{Binding IsQrSelected}" />
+                                <RadioButton GroupName="LoginType" Content="一键" IsChecked="{Binding IsSlideSelected}" />
+                                <RadioButton GroupName="LoginType" Content="静态密码" IsChecked="{Binding IsStaticSelected}" />
+                            </StackPanel>
+                            <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding SelectedAccount}"
+                                      PlaceholderText="选择已保存账号" AutomationProperties.Name="已保存账号"
+                                      IsVisible="{Binding ShowUsernameInput}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBox PlaceholderText="用户名" AutomationProperties.Name="用户名"
+                                     Text="{Binding Username}" IsVisible="{Binding ShowUsernameInput}" />
+                            <TextBox PlaceholderText="密码" AutomationProperties.Name="密码" Text="{Binding Password}"
+                                     PasswordChar="●" IsVisible="{Binding IsStaticSelected}" />
+                            <CheckBox Content="启用卫月 (Dalamud)" IsChecked="{Binding IsDalamudEnabled}" />
+                        </StackPanel>
+
+                        <Button x:Name="LoginButton" Classes="primary" Content="{Binding LoginButtonText}"
+                                Command="{Binding PrimaryLoginCommand}" HorizontalAlignment="Stretch" />
+
+                        <TextBlock Classes="secondary" Text="{Binding LaunchMessage}" TextWrapping="Wrap"
+                                   IsVisible="{Binding ShowLaunchMessage}" AutomationProperties.LiveSetting="Polite" />
+                        <Button Classes="secondary" Content="前往游戏维护" Command="{Binding OpenGameMaintenanceCommand}"
+                                IsVisible="{Binding NeedsGameUpdate}" />
+                        <StackPanel Spacing="6" IsVisible="{Binding ShowLaunchRecovery}">
+                            <WrapPanel>
+                                <Button Classes="secondary" Content="重试登录" Command="{Binding RetryLaunchCommand}" Margin="0,0,6,4" />
+                                <Button Classes="secondary" Content="无卫月登录" Command="{Binding LaunchWithoutDalamudCommand}"
+                                        IsVisible="{Binding IsDalamudEnabled}" Margin="0,0,0,4" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <Button Classes="secondary" Content="启动日志" Command="{Binding OpenLaunchLogsCommand}" Margin="0,0,6,4" />
+                                <Button Classes="secondary" Content="卫月日志" Command="{Binding OpenDalamudLogsCommand}"
+                                        IsVisible="{Binding IsDalamudEnabled}" Margin="0,0,0,4" />
+                            </WrapPanel>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8" HorizontalAlignment="Center" IsVisible="{Binding IsQrCodeVisible}">
+                            <Border Background="White" Padding="10" CornerRadius="8" HorizontalAlignment="Center">
+                                <Image Source="{Binding QrCodeImage}" Width="150" Height="150"
+                                       Stretch="Uniform" AutomationProperties.Name="登录二维码" />
+                            </Border>
+                            <TextBlock Classes="secondary" Text="请使用游戏客户端扫码" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock Text="{Binding StatusText}" ToolTip.Tip="{Binding StatusText}"
+                       FontSize="13" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Classes="secondary" Text="{Binding GameVersion, StringFormat='游戏 {0}'}" />
+                <TextBlock Classes="secondary" Text="{Binding DalamudVersion, StringFormat='卫月 {0}'}"
+                           IsVisible="{Binding IsDalamudEnabled}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

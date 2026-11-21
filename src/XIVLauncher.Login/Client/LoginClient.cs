@@ -1,0 +1,99 @@
+using System.Collections.Frozen;
+using Serilog;
+using XIVLauncher.Account.DeviceProfiles;
+using XIVLauncher.Login.Channels;
+using XIVLauncher.Login.Models;
+using XIVLauncher.Login.Workflow;
+
+namespace XIVLauncher.Login.Client;
+
+public sealed class LoginClient
+{
+    public async Task<LoginResult> LoginAsync(LoginType loginType, LoginRequest request, CancellationToken cancellationToken = default)
+    {
+        var channels = DiscoverChannels(new LoginChannelContext(request.DeviceProfile));
+
+        if (!channels.TryGetValue(loginType, out var channel))
+            throw new ArgumentOutOfRangeException(nameof(loginType), loginType, $"未知登录渠道: {loginType}");
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return await channel.LoginAsync(request, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<LoginResult> LoginBySessionKey
+    (
+        string                    account,
+        string                    autoLoginSessionKey,
+        ILoginSessionRefreshSink? loginSessionRefreshSink,
+        DeviceProfileSnapshot     deviceProfile
+    )
+    {
+        var request = new LoginRequest
+        {
+            Account                 = account,
+            Secret                  = autoLoginSessionKey,
+            DeviceProfile           = deviceProfile,
+            LoginSessionRefreshSink = loginSessionRefreshSink
+        };
+        return await LoginAsync(LoginType.QuickLogin, request).ConfigureAwait(false);
+    }
+
+    public async Task<LoginResult> LoginWithFallback
+    (
+        LoginType                     loginType,
+        LoginType                     fallbackLoginType,
+        Func<LoginType, LoginRequest> requestFactory,
+        CancellationToken             cancellationToken = default
+    )
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (loginType == LoginType.QuickLogin && fallbackLoginType != LoginType.QuickLogin)
+        {
+            try
+            {
+                var autoLoginRequest = requestFactory(loginType);
+                return await LoginAsync(loginType, autoLoginRequest, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException && !cancellationToken.IsCancellationRequested)
+            {
+                Log.Error(ex, "LoginBySessionKey failed, fallback to {FallbackLoginType}", fallbackLoginType);
+                loginType = fallbackLoginType;
+            }
+        }
+
+        var loginRequest = requestFactory(loginType);
+        return await LoginAsync(loginType, loginRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    ///     缓存渠道实现类型（反射扫描只在首次执行一次）。
+    ///     渠道实例因持有 <see cref="LoginChannelContext"/> 无法跨登录复用，
+    ///     但类型列表可静态缓存，避免每次登录都 <c>Assembly.GetTypes()</c> 扫描整个程序集。
+    /// </summary>
+    private static readonly Type[] ChannelTypes =
+        typeof(ILoginChannel)
+        .Assembly
+        .GetTypes()
+        .Where(type => type is { IsAbstract: false, IsInterface: false })
+        .Where(type => typeof(ILoginChannel).IsAssignableFrom(type))
+        .ToArray();
+
+    private static FrozenDictionary<LoginType, ILoginChannel> DiscoverChannels(LoginChannelContext context)
+    {
+        var loginChannels = ChannelTypes
+                            .Select(type => (ILoginChannel?)Activator.CreateInstance(type, context))
+                            .Where(channel => channel != null)
+                            .Cast<ILoginChannel>()
+                            .ToArray();
+
+        var duplicatedType = loginChannels
+                             .GroupBy(channel => channel.Type)
+                             .FirstOrDefault(group => group.Count() > 1);
+
+        if (duplicatedType != null)
+            throw new InvalidOperationException($"发现重复 LoginType 渠道实现: {duplicatedType.Key}");
+
+        return loginChannels.ToFrozenDictionary(channel => channel.Type);
+    }
+}

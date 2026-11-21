@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a reproducible problem with the macOS launcher
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not include account names, passwords, cookies, tokens, game files, or unredacted logs.**
+  - type: input
+    id: version
+    attributes:
+      label: Launcher version
+      placeholder: e.g. v2.5.3-macos.1 / commit hash
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS and chip
+      placeholder: e.g. macOS 27.3, Apple M5, 24 GB
+    validations:
+      required: true
+  - type: dropdown
+    id: wine
+    attributes:
+      label: Wine environment
+      options:
+        - xlcore / xom
+        - CrossOver
+        - Whisky
+        - Homebrew Wine
+        - Other / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: What did you click, what did you expect, what happened?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs (redacted)
+      description: Launcher/Dalamud log tail; remove credentials and personal paths.
+      render: text
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I removed credentials, cookies, tokens and personal paths from this report.
+          required: true
+        - label: This is not a security vulnerability (those should be reported privately).
+          required: true

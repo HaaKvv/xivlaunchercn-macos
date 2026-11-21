@@ -1,0 +1,16 @@
+<Project>
+
+    <PropertyGroup Label="Target">
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>preview</LangVersion>
+        <NoWarn>1701;1702;CS0414;CS8601;CS8602;CS8604;CS8603;IDE1006;IDE0300;MSB3270;MSB324;CS0649;CA2211;CS8509;CS8625;MSB3305;CS8618;CS8600;CS8605;CS8620;NU1903;CA1416</NoWarn>
+        <SatelliteResourceLanguages>xxx</SatelliteResourceLanguages>
+    </PropertyGroup>
+
+    <!-- macOS 移植分支: 定义 XL_MAC 编译符号, 用于隔离平台相关代码 -->
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+        <DefineConstants>$(DefineConstants);XL_MAC</DefineConstants>
+    </PropertyGroup>
+
+</Project>

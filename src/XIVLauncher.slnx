@@ -1,0 +1,18 @@
+<Solution>
+    <Configurations>
+        <BuildType Name="Debug" />
+        <BuildType Name="Release" />
+        <BuildType Name="ReleaseNoUpdate" />
+        <Platform Name="Any CPU" />
+    </Configurations>
+    <Project Path="XIVLauncher.Common.Http/XIVLauncher.Common.Http.csproj" />
+    <Project Path="XIVLauncher.Common/XIVLauncher.Common.csproj" />
+    <Project Path="XIVLauncher.Account/XIVLauncher.Account.csproj" />
+    <Project Path="XIVLauncher.Login/XIVLauncher.Login.csproj" />
+    <Project Path="XIVLauncher.DCTravel/XIVLauncher.DCTravel.csproj" />
+    <Project Path="XIVLauncher.GamePatchV3/XIVLauncher.GamePatchV3.csproj" />
+    <Project Path="XIVLauncher.Dalamud.Mac/XIVLauncher.Dalamud.Mac.csproj" />
+    <Project Path="XIVLauncher.Common.Mac/XIVLauncher.Common.Mac.csproj" />
+    <Project Path="XIVLauncher.Avalonia/XIVLauncher.Avalonia.csproj" />
+    <Project Path="XIVLauncher.Test/XIVLauncher.Test.csproj" />
+</Solution>

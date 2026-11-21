@@ -1,0 +1,100 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="XIVLauncher.Views.AccountWindow" Title="账号管理"
+        Width="760" Height="590" MinWidth="650" MinHeight="500"
+        WindowStartupLocation="CenterOwner" Background="{DynamicResource PanelBackgroundBrush}">
+    <Window.Styles>
+        <Style Selector="TextBlock.label"><Setter Property="VerticalAlignment" Value="Center" /></Style>
+        <Style Selector="TextBox"><Setter Property="HorizontalAlignment" Value="Stretch" /></Style>
+        <Style Selector="ComboBox"><Setter Property="HorizontalAlignment" Value="Stretch" /></Style>
+    </Window.Styles>
+    <Grid Margin="20" RowDefinitions="*,Auto" ColumnDefinitions="185,*" ColumnSpacing="18" RowSpacing="12">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="10">
+            <TextBlock Text="已保存账号" FontSize="17" FontWeight="SemiBold" />
+            <ListBox x:Name="AccountList" Grid.Row="1" SelectionChanged="OnAccountChanged">
+                <ListBox.ItemTemplate><DataTemplate>
+                    <StackPanel Spacing="3">
+                        <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding AreaName}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+                </DataTemplate></ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Row="2" Content="新增盛趣账号" HorizontalAlignment="Stretch" Click="OnNewAccount" />
+        </Grid>
+        <TabControl Grid.Column="1">
+            <TabItem Header="账号资料">
+                <ScrollViewer Margin="0,12,4,0" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Border Width="52" Height="52" CornerRadius="8" ClipToBounds="True" Background="{DynamicResource CardBackgroundBrush}">
+                                <Image x:Name="Avatar" Stretch="UniformToFill" />
+                            </Border>
+                            <Button Content="选择头像…" Click="OnChooseAvatar" VerticalAlignment="Center" />
+                            <Button Content="移除头像" Click="OnRemoveAvatar" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                            <TextBlock Classes="label" Text="盛趣账号" />
+                            <TextBox Grid.Column="1" x:Name="UsernameBox" AutomationProperties.Name="盛趣账号" MaxLength="128" />
+                            <TextBlock Grid.Row="1" Classes="label" Text="显示名" />
+                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="DisplayNameBox" AutomationProperties.Name="显示名" MaxLength="48" />
+                            <TextBlock Grid.Row="2" Classes="label" Text="默认大区" />
+                            <ComboBox Grid.Row="2" Grid.Column="1" x:Name="AreaBox" AutomationProperties.Name="默认大区" />
+                            <TextBlock Grid.Row="3" Classes="label" Text="保存密码" />
+                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="PasswordBox" PasswordChar="●"
+                                     PlaceholderText="留空保留已保存的密码" AutomationProperties.Name="保存密码" />
+                        </Grid>
+                        <CheckBox x:Name="QuickLoginBox" Content="保存快速登录凭据" />
+                        <CheckBox x:Name="AutoLoginBox" Content="启动时用上次账号自动登录并启动游戏" />
+                        <WrapPanel>
+                            <Button Content="保存账号" Margin="0,0,6,6" Click="OnSaveAccount" />
+                            <Button x:Name="UseButton" Content="切换到此账号" Margin="0,0,6,6" Click="OnUseAccount" />
+                            <Button x:Name="ClearButton" Content="清除凭据" Margin="0,0,6,6" Click="OnClearCredentials" />
+                            <Button x:Name="DeleteButton" Content="删除账号…" Margin="0,0,0,6" Click="OnDeleteAccount" />
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="设备档案">
+                <ScrollViewer Margin="0,12,4,0" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="10">
+                        <ComboBox x:Name="ProfileScope" SelectionChanged="OnProfileScopeChanged" AutomationProperties.Name="设备档案范围">
+                            <ComboBoxItem Content="共享设备档案" />
+                            <ComboBoxItem Content="所选账号的设备档案" />
+                        </ComboBox>
+                        <CheckBox x:Name="UseSeparateProfile" Content="为此账号使用独立设备档案" />
+                        <StackPanel x:Name="ProfileRotation" Orientation="Horizontal" Spacing="8">
+                            <CheckBox x:Name="RotateProfile" Content="定期轮换，每" />
+                            <NumericUpDown x:Name="RotationDays" Minimum="1" Maximum="365" Increment="1" Width="100" AutomationProperties.Name="轮换天数" />
+                            <TextBlock Classes="label" Text="天" />
+                        </StackPanel>
+                        <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                            <TextBlock Classes="label" Text="设备预设" />
+                            <ComboBox Grid.Column="1" x:Name="PresetBox" SelectionChanged="OnPresetChanged" AutomationProperties.Name="设备预设">
+                                <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" /></DataTemplate></ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock Grid.Row="1" Classes="label" Text="预设名称" />
+                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="PresetRemarkBox" AutomationProperties.Name="预设名称" MaxLength="48" />
+                            <TextBlock Grid.Row="2" Classes="label" Text="设备 ID" />
+                            <TextBox Grid.Row="2" Grid.Column="1" x:Name="DeviceIdBox" AutomationProperties.Name="设备 ID" MaxLength="128" />
+                            <TextBlock Grid.Row="3" Classes="label" Text="MAC 地址" />
+                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="MacBox" AutomationProperties.Name="MAC 地址" MaxLength="17" />
+                            <TextBlock Grid.Row="4" Classes="label" Text="主机名" />
+                            <TextBox Grid.Row="4" Grid.Column="1" x:Name="HostBox" AutomationProperties.Name="主机名" MaxLength="63" />
+                        </Grid>
+                        <WrapPanel>
+                            <Button Content="应用档案" Click="OnApplyProfile" Margin="0,0,6,6" />
+                            <Button Content="另存为预设" Click="OnSavePreset" Margin="0,0,6,6" />
+                            <Button Content="删除预设…" Click="OnDeletePreset" Margin="0,0,6,6" />
+                            <Button Content="生成设备资料" Click="OnGenerateProfile" Margin="0,0,6,6" />
+                            <Button Content="读取本机资料" Click="OnReadMachine" Margin="0,0,0,6" />
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock x:Name="Notice" VerticalAlignment="Center" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+            <Button Grid.Column="1" Content="完成" Click="OnDone" IsCancel="True" />
+        </Grid>
+    </Grid>
+</Window>

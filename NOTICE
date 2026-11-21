@@ -1,0 +1,33 @@
+XIVLauncherCN (macOS)
+Copyright (C) 2026 the XIVLauncherCN macOS contributors
+
+This project is an unofficial community port. It is not affiliated with,
+endorsed by, or sponsored by Square Enix, 盛趣游戏, CodeWeavers, or the
+Dalamud project.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version. See LICENSE.
+
+The project is derived from and/or informed by the following upstream projects:
+
+- AtmoOmen/FFXIVQuickLauncher (XIVLauncherCN "Soil" branch), GPL-3.0
+- GoatCorp/FFXIVQuickLauncher, GPL-3.0
+- ottercorp/XIVLauncher.Core (macOS compatibility reference), GPL-3.0
+
+Bundled third-party components include:
+
+- xdelta3 3.0.12, Apache License 2.0
+  Binary: src/XIVLauncher.Avalonia/Resources/xdelta3
+  License: third_party/xdelta3/LICENSE
+
+Runtime dependencies (NuGet) retain their respective licenses. Dalamud is not
+bundled; it is downloaded at runtime from a third-party distribution and remains
+subject to its own license and terms.
+
+FINAL FANTASY is a registered trademark of Square Enix Holdings Co., Ltd.
+All other trademarks and copyrights are the property of their respective owners.
+
+This project does not include FINAL FANTASY XIV game files, game assets, or
+account data.
