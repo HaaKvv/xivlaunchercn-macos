@@ -48,8 +48,10 @@ public sealed class LauncherSettingsV3DebounceTests
             settings.CurrentAccountID = "account-b";
             settings.CurrentAccountID = "account-c";
 
-            // 等待防抖定时器触发（300ms + 余量）
-            Thread.Sleep(800);
+            // 等待防抖定时器触发；CI 上线程池可能延迟，用轮询代替固定 sleep
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (!File.Exists(tempPath) && DateTime.UtcNow < deadline)
+                Thread.Sleep(50);
 
             Assert.True(File.Exists(tempPath), "防抖定时器应在无显式 Save 时自动落盘");
 
