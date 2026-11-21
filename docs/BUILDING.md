@@ -43,15 +43,16 @@ small wrapper that locates a .NET runtime. It is ad-hoc signed by default.
 ## xdelta3
 
 The bundled `src/XIVLauncher.Avalonia/Resources/xdelta3` is built from the
-vendored xdelta3 3.0.12 source. To rebuild it on macOS:
+vendored xdelta3 3.0.12 source at `third_party/xdelta3/source`. To rebuild it:
 
 ```bash
-cp -R path/to/xdelta3/vendor/xdelta3 /tmp/xd3build
-cd /tmp/xd3build
+cd third_party/xdelta3/source
 cc -O2 -DXD3_MAIN=1 -DXD3_USE_LARGEFILE64=1 -DXD3_POSIX=1 -DXD3_STDIO=0 \
    -DXD3_DEBUG=0 -DSIZEOF_SIZE_T=8 -DSIZEOF_UNSIGNED_LONG=8 \
    -DSIZEOF_UNSIGNED_LONG_LONG=8 -DSIZEOF_UNSIGNED_INT=4 \
    -DEXTERNAL_COMPRESSION=0 -DHAVE_CONFIG_H=0 -o xdelta3 xdelta3.c
+cp xdelta3 ../../../src/XIVLauncher.Avalonia/Resources/xdelta3
+chmod +x ../../../src/XIVLauncher.Avalonia/Resources/xdelta3
 ```
 
 The current binary is arm64. An Intel build needs an x64 binary in the same

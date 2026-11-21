@@ -18,7 +18,9 @@ license files.
 
 - **xdelta3 3.0.12** — Apache License 2.0
   - Binary: `src/XIVLauncher.Avalonia/Resources/xdelta3`
+  - Vendored source: `third_party/xdelta3/source`
   - License: [`third_party/xdelta3/LICENSE`](third_party/xdelta3/LICENSE)
+  - Build instructions: [`third_party/xdelta3/README.md`](third_party/xdelta3/README.md)
   - Used for V3 patch delta merging.
 
 ## Runtime NuGet dependencies

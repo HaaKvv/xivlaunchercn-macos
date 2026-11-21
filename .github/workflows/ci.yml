@@ -11,6 +11,9 @@ permissions:
 
 jobs:
   build-and-test:
+    # Standard GitHub-hosted macOS runners are Intel (x64). The release build is
+    # cross-published for arm64; tests run natively on x64 to avoid mixed-arch
+    # test hosts. Real game/Wine integration tests are excluded.
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
@@ -19,23 +22,31 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Restore
-        run: dotnet restore src/XIVLauncher.slnx
+      - name: Restore app (arm64)
+        run: >
+          dotnet restore src/XIVLauncher.Avalonia/XIVLauncher.Avalonia.csproj
+          -p:RuntimeIdentifier=osx-arm64
 
       - name: Build app (arm64)
         run: >
           dotnet build src/XIVLauncher.Avalonia/XIVLauncher.Avalonia.csproj
           -c Release -p:RuntimeIdentifier=osx-arm64 --no-restore
 
-      - name: Build tests
+      - name: Restore tests (x64)
+        run: >
+          dotnet restore src/XIVLauncher.Test/XIVLauncher.Test.csproj
+          -p:RuntimeIdentifier=osx-x64
+
+      - name: Build tests (x64)
         run: >
           dotnet build src/XIVLauncher.Test/XIVLauncher.Test.csproj
-          -c Release --no-restore
+          -c Release -p:RuntimeIdentifier=osx-x64 --no-restore
 
       - name: Unit tests
         run: >
           dotnet test src/XIVLauncher.Test/XIVLauncher.Test.csproj
-          -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+          -c Release -p:RuntimeIdentifier=osx-x64 --no-build
+          --logger "trx;LogFileName=test-results.trx"
           --filter "FullyQualifiedName!~MaintenanceIntegrationTests"
 
       - name: Upload test results

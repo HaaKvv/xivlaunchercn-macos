@@ -20,6 +20,7 @@ Bundled third-party components include:
 
 - xdelta3 3.0.12, Apache License 2.0
   Binary: src/XIVLauncher.Avalonia/Resources/xdelta3
+  Source: third_party/xdelta3/source
   License: third_party/xdelta3/LICENSE
 
 Runtime dependencies (NuGet) retain their respective licenses. Dalamud is not
